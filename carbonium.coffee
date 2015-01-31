@@ -37,7 +37,6 @@ if Meteor.isClient
       template: 'share'
       data: ->
         currentPictureId = @params.picture_id
-        window.qr = Template.qr
         Template.qr.rendered = ->
           picUrl = getPictureUrlById currentPictureId
           $('#qrcode').qrcode
@@ -152,6 +151,10 @@ if Meteor.isClient
                   top: top
                   left: left
                   lastestMoved: true
+
+        Template.picture.rendered = ->
+            $('body').css("overflow", "hidden")
+
         Devices.find({}).observe
           changed: (newDevice, oldDevice) ->
             if oldDevice and (newDevice.top isnt oldDevice.top or newDevice.left isnt oldDevice.left)

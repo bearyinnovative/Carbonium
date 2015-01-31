@@ -48,7 +48,7 @@ ul li:last-child {
 .header {
     width: 960px;
     margin: 0 auto;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .about {
@@ -89,5 +89,17 @@ ul li:last-child {
 
 #fullsize {
   position: absolute;
+}
+
+@media (max-width: 767px) {
+    .header {
+        width: 480px;
+    }
+    .content {
+        width: 480px;
+    }
+    ul li {
+        margin-right: 0px !important;
+    }
 }
 
