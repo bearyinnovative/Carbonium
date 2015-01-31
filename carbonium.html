@@ -12,6 +12,7 @@
     </li>
   {{/each}}
   </ul>
+  {{> upload}}
 </template>
 <template name="picture">
   <div class="content">
@@ -19,4 +20,11 @@
     <img src="{{url}}" style="top:{{getTop}}px; left:-{{getLeft}}px">
   {{/with}}
   </div>
+</template>
+
+<template name="upload">
+  <form enctype="multipart/form-data" class="file-form">
+    <input name="file" type="file" class="file-input"/>
+  </form>
+  <progress style="display:none"></progress>
 </template>

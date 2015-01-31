@@ -4,7 +4,21 @@ Devices = new Meteor.Collection 'devices'
 getDevicesByPictureId = (pictureId) ->
   Devices.find({pictureId: pictureId})
 
+upload_file = (target) ->
+  file = target.files[0]
+  AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
+  avFile = new AV.File("dummy_file", file)
+  window.avFile = avFile
+  avFile.save().then (saved_file) ->
+    Pictures.insert
+      url: saved_file.url()
+  , (error) ->
+    alert("error")
+
 if Meteor.isClient
+  Template.upload.events
+    "change .file-input": (event, template) ->
+      upload_file(event.target)
   Router.configure {}
   Router.map ->
     @route 'welcome',
