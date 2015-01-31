@@ -7,7 +7,6 @@ getDevicesByPictureId = (pictureId) ->
 upload_file = (file) ->
   AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
   avFile = new AV.File("dummy_file", file)
-  window.avFile = avFile
   avFile.save().then (saved_file) ->
     Pictures.insert
       url: saved_file.url()
@@ -37,8 +36,7 @@ if Meteor.isClient
         startX = startY = lastX = lastY = 0
         currentPictureId = @params.picture_id
         parseCssInt = (target, selector) ->
-          parseInt $(target).css(selector).replace("px", "").replace("auto", "0")
-
+          parseInt(getComputedStyle(target)[selector])
         getMyDevice = ->
           Devices.findOne({_id: Session.get('myDeviceId')})
 
@@ -52,7 +50,6 @@ if Meteor.isClient
                 top = 0
                 left = 0
               else
-                console.log devices
                 top = _.min(devices.map (d) -> d.top)
                 left = _.min(devices.map (d) -> d.left)
                 left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
@@ -104,18 +101,25 @@ if Meteor.isClient
                 $set:
                   top: top
                   left: left
-
+                  lastestMoved: true
         Devices.find({}).observe
           changed: (newDevice, oldDevice) ->
             if oldDevice and (newDevice.top isnt oldDevice.top or newDevice.left isnt oldDevice.left)
               device = getMyDevice()
               if newDevice._id isnt device._id
-                leftOffset = newDevice.left - oldDevice.left
-                topOffset = newDevice.top - oldDevice.top
-                console.log leftOffset, topOffset
-                $('#fullsize').css
-                  left: parseInt(getComputedStyle(fullsize).left) - leftOffset
-                  top: parseInt(getComputedStyle(fullsize).top) + topOffset
+                if device.lastestMoved is true
+                  Devices.update
+                    _id: device._id
+                  ,
+                    $set:
+                      lastestMoved: false
+                else
+                  leftOffset = newDevice.left - oldDevice.left
+                  topOffset = newDevice.top - oldDevice.top
+                  console.log leftOffset, topOffset
+                  $('#fullsize').css
+                    left: parseInt(getComputedStyle(fullsize).left) - leftOffset
+                    top: parseInt(getComputedStyle(fullsize).top) + topOffset
 
       Template.upload.events
         "change .file-input": (event, template) ->
