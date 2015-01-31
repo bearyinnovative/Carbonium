@@ -6,11 +6,82 @@
 }
 
 body {
-  overflow: hidden;
+    background: #232738;
+}
+
+form p {
+    padding: 51px 99px;
+    background: #FF6d6d;
+}
+
+input {
+    display: none;
+}
+
+ul li {
+    list-style: none;
+    display: block;
+    float: left;
+    text-align: center;
+    margin-top: 60px;
+    width: 420px;
+    height: 120px;
+    line-height: 120px;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+ul li:nth-child(odd) {
+    margin-right: 30px;
+}
+
+ul li:first-child {
+    margin-top: 30px;
+}
+
+ul li:last-child {
+    margin-bottom: 30px;
+}
+
+.header {
+    width: 960px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.about {
+    color: #FFF;
+}
+
+.about img {
+    height: 32px;
+    vertical-align: middle;
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo img {
+    height: 53px;
+    width: 224px;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.left {
+    float: left;
+}
+
+.content {
+    width: 960px;
+    margin: 0 auto;
 }
 
 .thumbnail {
-  width: 200px;
+  width: 400px;
   height: auto;
 }
 

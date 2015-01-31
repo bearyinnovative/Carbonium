@@ -3,25 +3,36 @@
 </head>
 
 <template name="pictures">
-  <ul>
-  {{# each all}}
-    <li>
-      <a href="/{{_id}}">
-        <img src="{{url}}" class="thumbnail">
-      </a>
-    </li>
-  {{/each}}
-  </ul>
-  {{> upload}}
+  <div class="header">
+    <div class="left about"><img src="/images/info@2x.png"> 关于</div>
+    <div class="logo">
+      <img src="/images/logo@2x.png">
+    </div>
+  </div>
+  <div class="content clearfix">
+    <ul>
+      <li>
+        {{> upload}}
+      </li>
+      {{# each all}}
+      <li>
+        <a href="/{{_id}}">
+          <img src="{{url}}" class="thumbnail">
+        </a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
 </template>
 <template name="picture">
   {{#with picture}}
-    <img src="{{url}}" id="fullsize" style="top:{{getTop}}px; left:{{getLeft}}px">
+  <img src="{{url}}" id="fullsize" style="top:{{getTop}}px; left:{{getLeft}}px">
   {{/with}}
 </template>
 
 <template name="upload">
   <form enctype="multipart/form-data" class="file-form">
+    <p>添加文件</p>
     <input name="file" type="file" class="file-input"/>
   </form>
   <progress style="display:none"></progress>
@@ -34,11 +45,10 @@
 
 <template name="share">
   {{#with picture}}
-    <img src="{{url}}" class="thumbnail">
+  <img src="{{url}}" class="thumbnail">
   {{/with}}
   {{#each devices}}
-    {{userAgent}}
+  {{userAgent}}
   {{/each}}
   {{> qr}}
 </template>
-
