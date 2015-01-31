@@ -1,14 +1,9 @@
-<head>
-  <title>Carbonium</title>
-</head>
-
-<body>
-  <h1>Welcome to Meteor!</h1>
-  {{> pictures}}
-
-</body>
-
 <template name="pictures">
+  {{# each all}}
+    {{url}}
+  {{/each}}
+</template>
+<template name="picture">
   {{# each all}}
     {{url}}
   {{/each}}

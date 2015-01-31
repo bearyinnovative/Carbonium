@@ -1,9 +1,21 @@
 Pictures = new Meteor.Collection 'pictures'
 
 if Meteor.isClient
+  Router.configure {}
+  Router.map ->
+    @route 'welcome',
+      path: '/'
+      template: 'pictures'
+    @route 'picture',
+      path: '/:picture_id'
+      template: 'picture'
+
   Template.pictures.helpers
     all: ->
       Pictures.find({})
+
+
+
 if Meteor.isServer
   if Pictures.find({}).fetch().length is 0
     Pictures.insert
