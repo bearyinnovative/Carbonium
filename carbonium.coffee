@@ -1,6 +1,9 @@
 Pictures = new Meteor.Collection 'pictures'
 Devices = new Meteor.Collection 'devices'
 
+getDevicesByPicture = (picture) ->
+  Devices.find({pictureId: picture._id})
+
 if Meteor.isClient
   Router.configure {}
   Router.map ->
@@ -80,7 +83,6 @@ if Meteor.isServer
       url: "http://image.tianjimedia.com/uploadImages/2012/353/4Q530MU50I69_glaciers1.jpg"
     Pictures.insert
       url: "http://pic.putaojiayuan.com/uploadfile/tuku/WuFengQuanGing/12190330244885.jpg"
-
 
   Meteor.setInterval ->
     Devices.remove {ts: {$lt: Date.now() - 2000}}
