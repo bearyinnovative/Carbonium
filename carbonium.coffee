@@ -15,9 +15,6 @@ upload_file = (file) ->
     alert("error")
 
 if Meteor.isClient
-  Template.upload.events
-    "change .file-input": (event, template) ->
-      upload_file(event.target.files[0])
   Router.configure {}
   Router.map ->
     @route 'welcome',
@@ -37,6 +34,9 @@ if Meteor.isClient
         currentPictureId = @params.picture_id
         parseCssInt = (target, selector) ->
           parseInt $(target).css(selector).replace("px", "").replace("auto", "0")
+
+        getMyDevice = ->
+          Devices.findOne({_id: Session.get('myDeviceId')})
 
         Template.picture.helpers
           picture: ->
@@ -61,20 +61,20 @@ if Meteor.isClient
                 height: jQuery(window).height()
                 top: top
                 left: left
-              Session.set 'myDeviceId', myDeviceId
               Meteor.setInterval ->
                 Meteor.call('heartbeat', myDeviceId)
               , 500
+              Session.set 'myDeviceId', myDeviceId
             return currentPicture
 
           getLeft: ->
-            Devices.findOne({_id: Session.get('myDeviceId')}).left or 0
+            getMyDevice().left or 0
 
           getTop: ->
-            Devices.findOne({_id: Session.get('myDeviceId')}).top or 0
+            getMyDevice().top or 0
 
-          myDevice: ->
-            Devices.findOne({_id: Session.get('myDeviceId')})
+          myDevice: getMyDevice
+
         Template.picture.events
           'dragstart img': (event) ->
             event.preventDefault()
@@ -90,12 +90,29 @@ if Meteor.isClient
             console.log "mouseup"
           'mousemove img': (event) ->
             if isMouseDown
-              left = event.screenX - lastX
+              left = lastX - event.screenX
               top = event.screenY - lastY
-              target = event.target
-              $(target).css
-                left:  left + 'px'
-                top: top + 'px'
+              device = getMyDevice()
+              Devices.update
+                _id: device._id
+              ,
+                $set:
+                  top: top
+                  left: left
+
+     #  Devices.find({}).observe
+     #    changed: (newDevice, oldDevice) ->
+     #      device = getMyDevice()
+     #      if oldDevice and (newDevice._id isnt device._id)
+     #        leftOffset = newDevice.left - oldDevice.left
+     #        topOffset = newDevice.top - oldDevice.top
+     #        $('#fullsize').css
+     #          left: device.left + leftOffset
+     #          top: device.top + topOffset
+
+      Template.upload.events
+        "change .file-input": (event, template) ->
+          upload_file(event.target.files[0])
 
   Template.pictures.helpers
     all: ->
@@ -105,10 +122,10 @@ if Meteor.isServer
   Meteor.methods
     heartbeat: (deviceId) ->
       Devices.update
-        _id: deviceId,
-        {$set:
+        _id: deviceId
+      ,
+        $set:
           ts: Date.now()
-        }
   if Pictures.find({}).fetch().length is 0
     Pictures.insert
       url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
@@ -119,7 +136,7 @@ if Meteor.isServer
 
   Meteor.setInterval ->
     Devices.remove {ts: {$lt: Date.now() - 2000}}
-    console.log Devices.find({}).fetch().lengt-h
+    console.log Devices.find({}).fetch().length
   , 1000
 
   Meteor.publish "pictures", ->
