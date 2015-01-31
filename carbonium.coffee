@@ -184,6 +184,9 @@ if Meteor.isClient
     all: ->
       Pictures.find({})
 
+  Template.pictures.events
+    "click .delete-button": ->
+      Pictures.remove this._id
 
 if Meteor.isServer
   Meteor.methods
