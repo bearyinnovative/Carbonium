@@ -61,9 +61,10 @@ if Meteor.isClient
                 height: jQuery(window).height()
                 top: top
                 left: left
+                ts: Date.now()
               Meteor.setInterval ->
                 Meteor.call('heartbeat', myDeviceId)
-              , 500
+              , 200
               Session.set 'myDeviceId', myDeviceId
             return currentPicture
 
@@ -100,15 +101,17 @@ if Meteor.isClient
                   top: top
                   left: left
 
-     #  Devices.find({}).observe
-     #    changed: (newDevice, oldDevice) ->
-     #      device = getMyDevice()
-     #      if oldDevice and (newDevice._id isnt device._id)
-     #        leftOffset = newDevice.left - oldDevice.left
-     #        topOffset = newDevice.top - oldDevice.top
-     #        $('#fullsize').css
-     #          left: device.left + leftOffset
-     #          top: device.top + topOffset
+        Devices.find({}).observe
+          changed: (newDevice, oldDevice) ->
+            if oldDevice and (newDevice.top isnt oldDevice.top or newDevice.left isnt oldDevice.left)
+              device = getMyDevice()
+              if newDevice._id isnt device._id
+                leftOffset = newDevice.left - oldDevice.left
+                topOffset = newDevice.top - oldDevice.top
+                console.log leftOffset, topOffset
+                $('#fullsize').css
+                  left: parseInt(getComputedStyle(fullsize).left) - leftOffset
+                  top: parseInt(getComputedStyle(fullsize).top) + topOffset
 
       Template.upload.events
         "change .file-input": (event, template) ->
@@ -126,6 +129,7 @@ if Meteor.isServer
       ,
         $set:
           ts: Date.now()
+
   if Pictures.find({}).fetch().length is 0
     Pictures.insert
       url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
@@ -133,11 +137,6 @@ if Meteor.isServer
       url: "http://image.tianjimedia.com/uploadImages/2012/353/4Q530MU50I69_glaciers1.jpg"
     Pictures.insert
       url: "http://pic.putaojiayuan.com/uploadfile/tuku/WuFengQuanGing/12190330244885.jpg"
-
-  Meteor.setInterval ->
-    Devices.remove {ts: {$lt: Date.now() - 2000}}
-    console.log Devices.find({}).fetch().length
-  , 1000
 
   Meteor.publish "pictures", ->
     Pictures.find({})
@@ -147,3 +146,11 @@ if Meteor.isServer
 
   Meteor.publish "devices", (pictureId) ->
     getDevicesByPictureId pictureId
+
+  Meteor.startup ->
+    Meteor.setInterval ->
+      Devices.remove {ts: {$lt: Date.now() - 1000}}
+      console.log Devices.find({}).fetch().map (d) -> d.ts
+      console.log Date.now()
+    , 1000
+
