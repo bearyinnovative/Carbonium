@@ -63,6 +63,7 @@ if Meteor.isClient
                 top: top
                 left: left
                 ts: Date.now()
+                userAgent: window.navigator.userAgent
               Session.set 'intervalId', Meteor.setInterval ->
                 Meteor.call('heartbeat', myDeviceId)
               , 200
@@ -120,6 +121,11 @@ if Meteor.isClient
                   $('#fullsize').css
                     left: parseInt(getComputedStyle(fullsize).left) - leftOffset
                     top: parseInt(getComputedStyle(fullsize).top) + topOffset
+          removed: (removedDevice) ->
+            device = getMyDevice()
+            if removedDevice._id isnt device._id and device.left > removedDevice.left
+              $('#fullsize').css
+                left: parseInt(getComputedStyle(fullsize).left) + removedDevice.width
 
       Template.upload.events
         "change .file-input": (event, template) ->
@@ -158,7 +164,6 @@ if Meteor.isServer
   Meteor.startup ->
     Meteor.setInterval ->
       Devices.remove {ts: {$lt: Date.now() - 1000}}
-      console.log Devices.find({}).fetch().map (d) -> d.ts
-      console.log Date.now()
+      console.log Devices.find({}).fetch()
     , 1000
 
