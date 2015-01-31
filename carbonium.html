@@ -12,7 +12,7 @@
 <template name="picture">
   <div class="content">
   {{#with picture}}
-    <img src="{{url}}">
+    <img src="{{url}}" style="top:{{getTop}}px; left:-{{getLeft}}px">
   {{/with}}
   </div>
 </template>

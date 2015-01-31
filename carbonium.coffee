@@ -1,16 +1,21 @@
 Pictures = new Meteor.Collection 'pictures'
 Devices = new Meteor.Collection 'devices'
 
-getDevicesByPicture = (picture) ->
-  Devices.find({pictureId: picture._id})
+getDevicesByPictureId = (pictureId) ->
+  Devices.find({pictureId: pictureId})
 
 if Meteor.isClient
   Router.configure {}
   Router.map ->
     @route 'welcome',
+      waitOn: ->
+       Meteor.subscribe('pictures')
       path: '/'
       template: 'pictures'
     @route 'picture',
+      waitOn: ->
+       Meteor.subscribe('picture', @params.picture_id) and
+       Meteor.subscribe('devices', @params.picture_id)
       path: '/:picture_id'
       template: 'picture'
       data: ->
@@ -24,24 +29,39 @@ if Meteor.isClient
           picture: ->
             currentPicture = Pictures.findOne(currentPictureId)
             unless Session.get 'myDeviceId'
+              left = 0
+              devices = getDevicesByPictureId(currentPictureId).fetch()
+              if devices.length is 0
+                top = 0
+                left = 0
+              else
+                console.log devices
+                top = _.min(devices.map (d) -> d.top)
+                left = _.min(devices.map (d) -> d.left)
+                left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
+                console.log top,left
+
               myDeviceId = Devices.insert
                 pictureId: currentPictureId
                 online: true
                 width: jQuery(window).width()
                 height: jQuery(window).height()
-                top: null
-                left: null
+                top: top
+                left: left
               Session.set 'myDeviceId', myDeviceId
               Meteor.setInterval ->
                 Meteor.call('heartbeat', myDeviceId)
               , 500
             return currentPicture
 
-          myDevices: ->
+          getLeft: ->
+            Devices.findOne({_id: Session.get('myDeviceId')}).left or 0
+
+          getTop: ->
+            Devices.findOne({_id: Session.get('myDeviceId')}).top or 0
+
+          myDevice: ->
             Devices.findOne({_id: Session.get('myDeviceId')})
-        Template.picture.helpers
-          picture: ->
-            Pictures.findOne _id: currentPictureId
         Template.picture.events
           'dragstart img': (event) ->
             event.preventDefault()
@@ -86,5 +106,14 @@ if Meteor.isServer
 
   Meteor.setInterval ->
     Devices.remove {ts: {$lt: Date.now() - 2000}}
-    console.log Devices.find({}).fetch()
+    console.log Devices.find({}).fetch().lengt-h
   , 1000
+
+  Meteor.publish "pictures", ->
+    Pictures.find({})
+
+  Meteor.publish "picture", (pictureId) ->
+    Pictures.find(pictureId)
+
+  Meteor.publish "devices", (pictureId) ->
+    getDevicesByPictureId pictureId
