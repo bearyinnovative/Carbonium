@@ -16,8 +16,13 @@
       </li>
       {{# each all}}
       <li>
+        <div class="qr-button">
+          <a href="/{{_id}}/share">
+            <img src="/images/qrcode@2x.png">
+          </a>
+        </div>
         <a href="/{{_id}}">
-          <img src="{{url}}" class="thumbnail">
+          <img src="{{url}}" class="thumbnail item">
         </a>
         <button class="delete-button">delete</button>
       </li>
@@ -25,6 +30,7 @@
     </ul>
   </div>
 </template>
+
 <template name="picture">
   <div class="main-content">
     {{#with picture}}
@@ -47,11 +53,10 @@
 </template>
 
 <template name="share">
-  {{#with picture}}
-  <img src="{{url}}" class="thumbnail">
-  {{/with}}
-  {{#each devices}}
-  {{userAgent}}
-  {{/each}}
-  {{> qr}}
+  <div class="content">
+    {{> qr}}
+    {{#each devices}}
+    {{userAgent}}
+    {{/each}}
+  </div>
 </template>

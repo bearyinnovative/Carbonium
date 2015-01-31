@@ -41,6 +41,8 @@ if Meteor.isClient
           picUrl = getPictureUrlById currentPictureId
           $('#qrcode').qrcode
             text: picUrl
+            width: 420
+            height: 420
 
         Template.share.helpers
           picture: ->

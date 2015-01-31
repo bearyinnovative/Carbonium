@@ -21,15 +21,16 @@ input {
 }
 
 ul li {
+    position: relative;
     list-style: none;
     display: block;
     float: left;
     text-align: center;
-    margin-top: 60px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     width: 420px;
     height: 120px;
     line-height: 120px;
-    vertical-align: middle;
     overflow: hidden;
 }
 
@@ -37,12 +38,8 @@ ul li:nth-child(odd) {
     margin-right: 30px;
 }
 
-ul li:first-child {
-    margin-top: 30px;
-}
-
-ul li:last-child {
-    margin-bottom: 30px;
+.item {
+    vertical-align: middle;
 }
 
 .header {
@@ -77,13 +74,35 @@ ul li:last-child {
     float: left;
 }
 
+.right {
+    float: right;
+}
+
 .content {
     width: 960px;
     margin: 0 auto;
+    text-align: center;
+}
+
+#qrcode canvas {
+    background: #FFF;
+    margin-top: 30px;
+}
+
+.qr-button {
+    position: absolute;
+    line-height: initial;
+    right: 0;
+    top: 0;
+}
+
+.qr-button img {
+    width: 34px;
+    height: 34px;
 }
 
 .thumbnail {
-  width: 400px;
+  width: 420px;
   height: auto;
 }
 
@@ -100,6 +119,12 @@ ul li:last-child {
     }
     ul li {
         margin-right: 0px !important;
+    }
+    ul li:nth-child(2) {
+        margin-top: 60px;
+    }
+    ul li:nth-last-child(2) {
+        margin-bottom: 0px;
     }
 }
 
