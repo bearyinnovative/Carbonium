@@ -124,7 +124,7 @@ if Meteor.isClient
           removed: (removedDevice) ->
             device = getMyDevice()
             if removedDevice._id isnt device._id and device.left > removedDevice.left
-              $('#fullsize').css
+              $('#fullsize').animate
                 left: parseInt(getComputedStyle(fullsize).left) + removedDevice.width
 
       Template.upload.events
