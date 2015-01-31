@@ -4,7 +4,7 @@
   {{/each}}
 </template>
 <template name="picture">
-  {{# each all}}
-    {{url}}
-  {{/each}}
+  {{#with picture}}
+    <img src="{{url}}">
+  {{/with}}
 </template>

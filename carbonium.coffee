@@ -14,10 +14,13 @@ if Meteor.isClient
     all: ->
       Pictures.find({})
 
+  Template.picture.helpers
+    picture: ->
+      Pictures.find({}).fetch()[1]
 
 
 if Meteor.isServer
-  if Pictures.find({}).fetch().length is 0
+  if Pictures.find({}).fetch().length < 2
     Pictures.insert
-      url: "http://en.wikipedia.org/wiki/File:Helvellyn_Striding_Edge_360_Panorama,_Lake_District_-_June_09.jpg"
+      url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
 
