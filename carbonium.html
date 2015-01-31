@@ -1,5 +1,5 @@
 <head>
-  <meta name="viewport" content="width=device-width; initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 
 <template name="pictures">
@@ -15,11 +15,9 @@
   {{> upload}}
 </template>
 <template name="picture">
-  <div class="content">
   {{#with picture}}
-    <img src="{{url}}" style="top:{{getTop}}px; left:-{{getLeft}}px">
+    <img src="{{url}}" id="fullsize" style="top:{{getTop}}px; left:-{{getLeft}}px">
   {{/with}}
-  </div>
 </template>
 
 <template name="upload">

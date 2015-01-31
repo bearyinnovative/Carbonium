@@ -8,12 +8,13 @@
 body {
   overflow: hidden;
 }
+
 .thumbnail {
   width: 200px;
   height: auto;
 }
 
-div.content img {
-    position: absolute;
+#fullsize {
+  position: absolute;
 }
 
