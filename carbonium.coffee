@@ -17,7 +17,6 @@ upload_file = (file) ->
     picUrl = getPictureUrlById(pictureId)
     $('#qrcode').qrcode
       text: picUrl
-    alert(picUrl)
   , (error) ->
     alert("error")
 
