@@ -83,33 +83,22 @@ if Meteor.isClient
           event.preventDefault()
           return
 
-        document.addEventListener("touchstart", touchHandler, true);
-        document.addEventListener("touchmove", touchHandler, true);
-        document.addEventListener("touchend", touchHandler, true);
-        document.addEventListener("touchcancel", touchHandler, true);
+        document.addEventListener("touchstart", touchHandler, true)
+        document.addEventListener("touchmove", touchHandler, true)
+        document.addEventListener("touchend", touchHandler, true)
+        document.addEventListener("touchcancel", touchHandler, true)
 
         Template.picture.helpers
           picture: ->
             currentPicture = Pictures.findOne(currentPictureId)
             unless Session.get 'myDeviceId'
-              left = 0
-              devices = getDevicesByPictureId(currentPictureId).fetch()
-              if devices.length is 0
-                top = 0
-                left = 0
-              else
-                top = _.min(devices.map (d) -> d.top)
-                left = _.min(devices.map (d) -> d.left)
-                left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
-                console.log top,left
-
               myDeviceId = Devices.insert
                 pictureId: currentPictureId
                 online: true
                 width: jQuery(window).width()
                 height: jQuery(window).height()
-                top: top
-                left: left
+                top: 0
+                left: 0
                 ts: Date.now()
                 userAgent: window.navigator.userAgent
               Session.set 'intervalId', Meteor.setInterval ->
@@ -201,6 +190,9 @@ if Meteor.isClient
     all: ->
       Pictures.find({})
 
+  Template.pictures.events
+    "click .delete-button": ->
+      Pictures.remove this._id
 
 if Meteor.isServer
   Meteor.methods
@@ -211,13 +203,19 @@ if Meteor.isServer
         $set:
           ts: Date.now()
 
-  if Pictures.find({}).fetch().length is 0
-    Pictures.insert
-      url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
-    Pictures.insert
-      url: "http://image.tianjimedia.com/uploadImages/2012/353/4Q530MU50I69_glaciers1.jpg"
-    Pictures.insert
-      url: "http://pic.putaojiayuan.com/uploadfile/tuku/WuFengQuanGing/12190330244885.jpg"
+  Devices.allow
+    insert: (userId, newDevice) ->
+      devices = getDevicesByPictureId(newDevice.pictureId).fetch()
+      if devices.length is 0
+        top = 0
+        left = 0
+      else
+        top = _.min(devices.map (d) -> d.top)
+        left = _.min(devices.map (d) -> d.left)
+        left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
+      newDevice.top = top
+      newDevice.left = left
+      true
 
   Meteor.publish "pictures", ->
     Pictures.find({})
