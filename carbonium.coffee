@@ -1,4 +1,5 @@
 Pictures = new Meteor.Collection 'pictures'
+Devices = new Meteor.Collection 'devices'
 
 if Meteor.isClient
   Router.configure {}
@@ -10,10 +11,22 @@ if Meteor.isClient
       path: '/:picture_id'
       template: 'picture'
       data: ->
-        currentPicture = Pictures.findOne({_id: @params.picture_id})
+        currentPictureId = @params.picture_id
         Template.picture.helpers
           picture: ->
-            currentPicture
+            currentPicture = Pictures.findOne(currentPictureId)
+            unless Session.get 'myDeviceId'
+              myDeviceId = Devices.insert
+                pictureId: currentPictureId
+                online: true
+              Session.set 'myDeviceId', myDeviceId
+              Meteor.setInterval ->
+                Meteor.call('heartbeat', myDeviceId)
+              , 500
+            return currentPicture
+
+          myDevices: ->
+            Devices.findOne({_id: Session.get('myDeviceId')})
 
   Template.pictures.helpers
     all: ->
@@ -21,11 +34,15 @@ if Meteor.isClient
 
 
 if Meteor.isServer
-  Pictures.remove {}
-  Pictures.insert
-    url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
-  Pictures.insert
-    url: "http://image.tianjimedia.com/uploadImages/2012/353/4Q530MU50I69_glaciers1.jpg"
-  Pictures.insert
-    url: "http://pic.putaojiayuan.com/uploadfile/tuku/WuFengQuanGing/12190330244885.jpg"
+  Meteor.methods
+    heartbeat: (deviceId) ->
+      Devices.update
+        _id: deviceId,
+        {$set:
+          ts: Date.now()
+        }
 
+  Meteor.setInterval ->
+    Devices.remove {ts: {$lt: Date.now() - 2000}}
+    console.log Devices.find({}).fetch().length
+  , 1000
