@@ -4,12 +4,19 @@ Devices = new Meteor.Collection 'devices'
 getDevicesByPictureId = (pictureId) ->
   Devices.find({pictureId: pictureId})
 
+getPictureUrlById = (pictureId) ->
+  "http://#{window.location.hostname}:#{window.location.port}/#{pictureId}"
+
 upload_file = (file) ->
   AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
   avFile = new AV.File("dummy_file", file)
   avFile.save().then (saved_file) ->
-    Pictures.insert
-      url: saved_file.url()
+    url = saved_file.url()
+    pictureId = Pictures.insert
+      url: url
+    picUrl = getPictureUrlById(pictureId)
+    $('#qrcode').qrcode
+      text: picUrl
   , (error) ->
     alert("error")
 
@@ -39,6 +46,30 @@ if Meteor.isClient
           parseInt(getComputedStyle(target)[selector])
         getMyDevice = ->
           Devices.findOne({_id: Session.get('myDeviceId')})
+
+        touchHandler = (event) ->
+          touches = event.changedTouches
+          first = touches[0]
+          type = ""
+          switch event.type
+            when "touchstart"
+              type = "mousedown"
+            when "touchmove"
+              type = "mousemove"
+            when "touchend"
+              type = "mouseup"
+            else
+              return
+          simulatedEvent = document.createEvent("MouseEvent")
+          simulatedEvent.initMouseEvent type, true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0, null #left
+          first.target.dispatchEvent simulatedEvent
+          event.preventDefault()
+          return
+
+        document.addEventListener("touchstart", touchHandler, true);
+        document.addEventListener("touchmove", touchHandler, true);
+        document.addEventListener("touchend", touchHandler, true);
+        document.addEventListener("touchcancel", touchHandler, true);
 
         Template.picture.helpers
           picture: ->
