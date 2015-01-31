@@ -5,6 +5,9 @@
   box-sizing: border-box;
 }
 
+body {
+  overflow: hidden;
+}
 .thumbnail {
   width: 200px;
   height: auto;
