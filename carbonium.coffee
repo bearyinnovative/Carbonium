@@ -22,6 +22,10 @@ if Meteor.isClient
        Meteor.subscribe('pictures')
       path: '/'
       template: 'pictures'
+      data: ->
+        intervalId = Session.get 'intervalId'
+        Meteor.clearInterval(intervalId) if intervalId
+        Session.set 'myDeviceId', undefined
     @route 'picture',
       waitOn: ->
        Meteor.subscribe('picture', @params.picture_id) and
@@ -62,7 +66,7 @@ if Meteor.isClient
                 top: top
                 left: left
                 ts: Date.now()
-              Meteor.setInterval ->
+              Session.set 'intervalId', Meteor.setInterval ->
                 Meteor.call('heartbeat', myDeviceId)
               , 200
               Session.set 'myDeviceId', myDeviceId
@@ -85,7 +89,7 @@ if Meteor.isClient
             top = parseCssInt(event.target, 'top')
             lastX = event.screenX - left
             lastY = event.screenY - top
-            console.log left, top, lastX, lastY
+            #console.log left, top, lastX, lastY
           'mouseup img': (event)->
             isMouseDown = false
             console.log "mouseup"
