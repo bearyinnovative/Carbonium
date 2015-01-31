@@ -24,6 +24,10 @@ if Meteor.isClient
               myDeviceId = Devices.insert
                 pictureId: currentPictureId
                 online: true
+                width: jQuery(window).width()
+                height: jQuery(window).height()
+                top: null
+                left: null
               Session.set 'myDeviceId', myDeviceId
               Meteor.setInterval ->
                 Meteor.call('heartbeat', myDeviceId)
@@ -80,5 +84,5 @@ if Meteor.isServer
 
   Meteor.setInterval ->
     Devices.remove {ts: {$lt: Date.now() - 2000}}
-    console.log Devices.find({}).fetch().length
+    console.log Devices.find({}).fetch()
   , 1000
