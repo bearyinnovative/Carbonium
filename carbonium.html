@@ -1,7 +1,13 @@
 <template name="pictures">
+  <ul>
   {{# each all}}
-    {{url}}
+    <li>
+      <a href="/{{_id}}">
+        <img src="{{url}}" class="thumbnail">
+      </a>
+    </li>
   {{/each}}
+  </ul>
 </template>
 <template name="picture">
   {{#with picture}}

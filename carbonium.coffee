@@ -9,18 +9,23 @@ if Meteor.isClient
     @route 'picture',
       path: '/:picture_id'
       template: 'picture'
+      data: ->
+        currentPicture = Pictures.findOne({_id: @params.picture_id})
+        Template.picture.helpers
+          picture: ->
+            currentPicture
 
   Template.pictures.helpers
     all: ->
       Pictures.find({})
 
-  Template.picture.helpers
-    picture: ->
-      Pictures.find({}).fetch()[1]
-
 
 if Meteor.isServer
-  if Pictures.find({}).fetch().length < 2
-    Pictures.insert
-      url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
+  Pictures.remove {}
+  Pictures.insert
+    url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
+  Pictures.insert
+    url: "http://image.tianjimedia.com/uploadImages/2012/353/4Q530MU50I69_glaciers1.jpg"
+  Pictures.insert
+    url: "http://pic.putaojiayuan.com/uploadfile/tuku/WuFengQuanGing/12190330244885.jpg"
 

@@ -4,3 +4,9 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.thumbnail {
+  width: 200px;
+  height: auto;
+}
+
