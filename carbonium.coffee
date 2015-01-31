@@ -48,6 +48,30 @@ if Meteor.isClient
         getMyDevice = ->
           Devices.findOne({_id: Session.get('myDeviceId')})
 
+        touchHandler = (event) ->
+          touches = event.changedTouches
+          first = touches[0]
+          type = ""
+          switch event.type
+            when "touchstart"
+              type = "mousedown"
+            when "touchmove"
+              type = "mousemove"
+            when "touchend"
+              type = "mouseup"
+            else
+              return
+          simulatedEvent = document.createEvent("MouseEvent")
+          simulatedEvent.initMouseEvent type, true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0, null #left
+          first.target.dispatchEvent simulatedEvent
+          event.preventDefault()
+          return
+
+        document.addEventListener("touchstart", touchHandler, true);
+        document.addEventListener("touchmove", touchHandler, true);
+        document.addEventListener("touchend", touchHandler, true);
+        document.addEventListener("touchcancel", touchHandler, true);
+
         Template.picture.helpers
           picture: ->
             currentPicture = Pictures.findOne(currentPictureId)
@@ -78,7 +102,7 @@ if Meteor.isClient
             return currentPicture
 
           getLeft: ->
-            getMyDevice().left or 0
+            -getMyDevice().left or 0
 
           getTop: ->
             getMyDevice().top or 0
