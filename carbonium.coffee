@@ -190,6 +190,9 @@ if Meteor.isClient
       Template.upload.events
         "change .file-input": (event, template) ->
           upload_file(event.target.files[0])
+        "click p": (event) ->
+            target = event.target
+            $(target).next().trigger("click")
 
   Template.pictures.helpers
     all: ->

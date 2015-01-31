@@ -10,8 +10,10 @@ body {
 }
 
 form p {
-    padding: 51px 99px;
+    padding: 51px 178px;
     background: #FF6d6d;
+    display: inline;
+    cursor: pointer;
 }
 
 input {
