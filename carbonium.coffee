@@ -14,9 +14,6 @@ upload_file = (file) ->
     url = saved_file.url()
     pictureId = Pictures.insert
       url: url
-    picUrl = getPictureUrlById(pictureId)
-    $('#qrcode').qrcode
-      text: picUrl
   , (error) ->
     alert("error")
 
@@ -30,8 +27,29 @@ if Meteor.isClient
       template: 'pictures'
       data: ->
         intervalId = Session.get 'intervalId'
-        Meteor.clearInterval(intervalId) if intervalId
-        Session.set 'myDeviceId', undefined
+        meteor.clearInterval(intervalId) if intervalId
+        Session.set 'mydeviceId', undefined
+    @route 'share',
+      waitOn: ->
+       Meteor.subscribe('picture', @params.picture_id) and
+       Meteor.subscribe('devices', @params.picture_id)
+      path: '/:picture_id/share'
+      template: 'share'
+      data: ->
+        currentPictureId = @params.picture_id
+        window.qr = Template.qr
+        Template.qr.rendered = ->
+          picUrl = getPictureUrlById currentPictureId
+          $('#qrcode').qrcode
+            text: picUrl
+
+        Template.share.helpers
+          picture: ->
+            Pictures.findOne currentPictureId
+          devices: ->
+            getDevicesByPictureId currentPictureId
+
+
     @route 'picture',
       waitOn: ->
        Meteor.subscribe('picture', @params.picture_id) and
@@ -176,6 +194,7 @@ if Meteor.isClient
   Template.pictures.helpers
     all: ->
       Pictures.find({})
+
 
 if Meteor.isServer
   Meteor.methods

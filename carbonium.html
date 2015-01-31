@@ -24,7 +24,21 @@
   <form enctype="multipart/form-data" class="file-form">
     <input name="file" type="file" class="file-input"/>
   </form>
-  <div id="qrcode">
-  </div>
   <progress style="display:none"></progress>
 </template>
+
+<template name="qr">
+  <div id="qrcode">
+  </div>
+</template>
+
+<template name="share">
+  {{#with picture}}
+    <img src="{{url}}" class="thumbnail">
+  {{/with}}
+  {{#each devices}}
+    {{userAgent}}
+  {{/each}}
+  {{> qr}}
+</template>
+
