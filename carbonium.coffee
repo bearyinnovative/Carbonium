@@ -205,14 +205,6 @@ if Meteor.isServer
         $set:
           ts: Date.now()
 
-  if Pictures.find({}).fetch().length is 0
-    Pictures.insert
-      url: "http://bbs.c114.net/uploadImages/200412912265686500.jpg"
-    Pictures.insert
-      url: "http://image.tianjimedia.com/uploadImages/2012/353/4Q530MU50I69_glaciers1.jpg"
-    Pictures.insert
-      url: "http://pic.putaojiayuan.com/uploadfile/tuku/WuFengQuanGing/12190330244885.jpg"
-
   Meteor.publish "pictures", ->
     Pictures.find({})
 
