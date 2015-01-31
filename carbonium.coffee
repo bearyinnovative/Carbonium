@@ -4,12 +4,20 @@ Devices = new Meteor.Collection 'devices'
 getDevicesByPictureId = (pictureId) ->
   Devices.find({pictureId: pictureId})
 
+getPictureUrlById = (pictureId) ->
+  "http://#{window.location.hostname}:#{window.location.port}/#{pictureId}"
+
 upload_file = (file) ->
   AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
   avFile = new AV.File("dummy_file", file)
   avFile.save().then (saved_file) ->
-    Pictures.insert
-      url: saved_file.url()
+    url = saved_file.url()
+    pictureId = Pictures.insert
+      url: url
+    picUrl = getPictureUrlById(pictureId)
+    $('#qrcode').qrcode
+      text: picUrl
+    alert(picUrl)
   , (error) ->
     alert("error")
 
