@@ -71,7 +71,7 @@ if Meteor.isClient
             return currentPicture
 
           getLeft: ->
-            getMyDevice().left or 0
+            -getMyDevice().left or 0
 
           getTop: ->
             getMyDevice().top or 0
@@ -126,6 +126,17 @@ if Meteor.isClient
             if removedDevice._id isnt device._id and device.left > removedDevice.left
               $('#fullsize').animate
                 left: parseInt(getComputedStyle(fullsize).left) + removedDevice.width
+              ,
+                done: ->
+                  console.log 1
+                  Devices.update
+                    _id: device._id
+                  ,
+                  $set:
+                    left: parseInt(getComputedStyle(fullsize).left)
+                    lastestMoved: true
+
+
 
       Template.upload.events
         "change .file-input": (event, template) ->
