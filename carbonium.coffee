@@ -143,6 +143,8 @@ if Meteor.isClient
                   left: left
                   lastestMoved: true
 
+        Template.pictures.rendered = ->
+            $('body').css("overflow", "auto")
         Template.picture.rendered = ->
             $('body').css("overflow", "hidden")
 
@@ -178,8 +180,6 @@ if Meteor.isClient
                   $set:
                     left: parseInt(getComputedStyle(fullsize).left)
                     lastestMoved: true
-
-
 
       Template.upload.events
         "change .file-input": (event, template) ->
@@ -218,6 +218,7 @@ if Meteor.isServer
       newDevice.top = top
       newDevice.left = left
       true
+    update: -> true
 
   Meteor.publish "pictures", ->
     Pictures.find({})
