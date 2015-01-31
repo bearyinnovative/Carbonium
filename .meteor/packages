@@ -10,4 +10,5 @@ coffeescript
 jquery
 iron:router
 underscore
-hammer:hammer
+noorderstorm:hammer
+
