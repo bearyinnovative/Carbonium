@@ -1,14 +1,11 @@
 Pictures = new Meteor.Collection 'pictures'
 
 if Meteor.isClient
-  Template.pictures.helper
-    all: [
-        {url:"1"},
-        {url:"2"},
-        {url:"3"},
-        {url:"4"}
-      ]
-
+  Template.pictures.helpers
+    all: ->
+      Pictures.find({})
 if Meteor.isServer
-  console.log "is server side"
+  if Pictures.find({}).fetch().length is 0
+    Pictures.insert
+      url: "http://en.wikipedia.org/wiki/File:Helvellyn_Striding_Edge_360_Panorama,_Lake_District_-_June_09.jpg"
 
