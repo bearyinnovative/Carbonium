@@ -43,6 +43,25 @@ input {
     display: none;
 }
 
+.corner {
+    width: 0;
+    height: 0;
+	border-right: 40px solid transparent;
+	border-bottom: 40px solid #FF6D6D;
+    position: absolute;
+    bottom: 0;
+}
+
+.delete-icon {
+    position: absolute;
+    bottom: -4px;
+    left: -6px;
+}
+
+.delete:hover {
+    cursor: pointer;
+}
+
 ul li {
     position: relative;
     list-style: none;
@@ -135,19 +154,6 @@ a.button {
 #qrcode canvas {
     background: #FFF;
     margin-top: 30px;
-}
-
-.icon-qrcode {
-    opacity: .5;
-    -webkit-transition: opacity .15s ease-in-out;
-    -moz-transition: opacity .15s ease-in-out;
-    -ms-transition: opacity .15s ease-in-out;
-    -o-transition: opacity .15s ease-in-out;
-    transition: opacity .15s ease-in-out;
-}
-
-.icon-qrcode:hover {
-    opacity: 1.0;
 }
 
 .qr-button {

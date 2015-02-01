@@ -191,13 +191,16 @@ if Meteor.isClient
         "click form": (event) ->
             target = event.target
             $('input', target).trigger "click"
+        "click p": (event) ->
+            target = event.target
+            $(target).next().trigger "click"
 
   Template.pictures.helpers
     all: ->
       Pictures.find({})
 
   Template.pictures.events
-    "click .delete-button": ->
+    "click img.delete": ->
       Pictures.remove this._id
 
 if Meteor.isServer
