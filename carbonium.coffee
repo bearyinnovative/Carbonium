@@ -167,7 +167,6 @@ if Meteor.isClient
             if oldDevice and newDevice.mouseUp isnt oldDevice.mouseUp and newDevice.mouseUp
               device = getMyDevice()
               if newDevice._id isnt device._id
-                console.log device.left, device.top, parseInt(getComputedStyle(fullsize).left), parseInt(getComputedStyle(fullsize).top)
                 Devices.update
                   _id: device._id
                 ,
@@ -189,7 +188,6 @@ if Meteor.isClient
                 else
                   leftOffset = newDevice.left - oldDevice.left
                   topOffset = newDevice.top - oldDevice.top
-                  console.log leftOffset, topOffset
                   $('#fullsize').css
                     left: parseInt(getComputedStyle(fullsize).left) - leftOffset
                     top: parseInt(getComputedStyle(fullsize).top) + topOffset
@@ -201,7 +199,6 @@ if Meteor.isClient
                 left: parseInt(getComputedStyle(fullsize).left) + removedDevice.width
               ,
                 done: ->
-                  console.log 1
                   Devices.update
                     _id: device._id
                   ,
@@ -246,7 +243,6 @@ if Meteor.isServer
         top = _.min(devices.map (d) -> d.top)
         left = _.min(devices.map (d) -> d.left)
         left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
-      console.log "insert new Device:", top
       newDevice.top = top
       newDevice.left = left
       true
