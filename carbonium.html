@@ -62,9 +62,13 @@
   <div class="content">
     {{> qr}}
     {{#each devices}}
-    {{userAgent}}
+      {{> device}}
     {{/each}}
   </div>
+</template>
+
+<template name="device">
+  <img src="{{iconUrl}}" class="device">
 </template>
 
 <template name="about">

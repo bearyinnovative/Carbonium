@@ -152,8 +152,31 @@ a.button {
 }
 
 #qrcode canvas {
-    background: #FFF;
-    margin-top: 30px;
+  background: #FFF;
+  margin-top: 30px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.devices {
+ counter-reset: section;   
+ text-align: center;
+}
+
+.device {
+  display: inline;
+  position: relative;
+  margin: 0;
+}
+
+.device:before {                                                              
+  font-size: 30px;
+  font-style: italic;
+  position: absolute;
+  top: -20px;
+  margin-left: 55px;
+  content:  counter(section);                                    
+  counter-increment: section;   
 }
 
 .qr-button {
@@ -190,4 +213,3 @@ a.button {
         margin-bottom: 0px;
     }
 }
-

@@ -17,6 +17,16 @@ upload_file = (file) ->
   , (error) ->
     alert("error")
 
+getDeviceIconByUserAgent = (userAgent) ->
+  if userAgent.indexOf("iPad") isnt -1
+    return "/images/pad@2x.png"
+  if userAgent.indexOf("iOS") isnt -1
+    return "/images/phone@2x.png"
+  if userAgent.indexOf("Android") isnt -1
+    return "/images/phone@2x.png"
+  else
+    return "/images/mac@2x.png"
+
 if Meteor.isClient
   Router.configure {}
   Router.map ->
@@ -46,14 +56,18 @@ if Meteor.isClient
           picUrl = getPictureUrlById currentPictureId
           $('#qrcode').qrcode
             text: picUrl
-            width: 420
-            height: 420
+            width: 240
+            height: 240
 
         Template.share.helpers
           picture: ->
             Pictures.findOne currentPictureId
           devices: ->
             getDevicesByPictureId currentPictureId
+
+      Template.device.helpers
+        iconUrl: ->
+          getDeviceIconByUserAgent @userAgent
 
     @route 'picture',
       waitOn: ->
