@@ -11,6 +11,7 @@ body {
 
 form {
     background: #1A1D2B;
+    cursor: pointer;
 }
 
 .icon {
@@ -21,7 +22,6 @@ form {
 
 form p {
     display: inline;
-    cursor: pointer;
     color: #FFF;
 }
 
