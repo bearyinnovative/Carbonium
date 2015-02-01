@@ -4,7 +4,11 @@
 
 <template name="pictures">
   <div class="header">
-    <div class="left about"><img class="icon" src="/images/info@2x.png"> 关于</div>
+    <div class="left about">
+      <a href="/about">
+        <img class="icon" src="/images/info@2x.png"> 关于
+      </a>
+    </div>
     <div class="logo">
       <img src="/images/logo@2x.png">
     </div>
@@ -60,4 +64,8 @@
     {{userAgent}}
     {{/each}}
   </div>
+</template>
+
+<template name="about">
+  This is about
 </template>

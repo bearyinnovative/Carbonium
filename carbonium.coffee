@@ -29,6 +29,11 @@ if Meteor.isClient
         intervalId = Session.get 'intervalId'
         meteor.clearInterval(intervalId) if intervalId
         Session.set 'mydeviceId', undefined
+
+    @route 'about',
+        path: '/about'
+        template: 'about'
+
     @route 'share',
       waitOn: ->
        Meteor.subscribe('picture', @params.picture_id) and
@@ -49,7 +54,6 @@ if Meteor.isClient
             Pictures.findOne currentPictureId
           devices: ->
             getDevicesByPictureId currentPictureId
-
 
     @route 'picture',
       waitOn: ->
