@@ -27,7 +27,7 @@ if Meteor.isClient
       template: 'pictures'
       data: ->
         intervalId = Session.get 'intervalId'
-        meteor.clearInterval(intervalId) if intervalId
+        Meteor.clearInterval(intervalId) if intervalId
         Session.set 'mydeviceId', undefined
 
     @route 'about',
