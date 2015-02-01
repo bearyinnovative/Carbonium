@@ -9,11 +9,20 @@ body {
     background: #232738;
 }
 
+form {
+    background: #1A1D2B;
+}
+
+.icon {
+    width: 34px;
+    height: 34px;
+    vertical-align: middle;
+}
+
 form p {
-    padding: 51px 178px;
-    background: #FF6d6d;
     display: inline;
     cursor: pointer;
+    color: #FFF;
 }
 
 input {
@@ -50,11 +59,6 @@ ul li:nth-child(odd) {
 
 .about {
     color: #FFF;
-}
-
-.about img {
-    height: 32px;
-    vertical-align: middle;
 }
 
 .logo {
@@ -94,11 +98,6 @@ ul li:nth-child(odd) {
     line-height: initial;
     right: 0;
     top: 0;
-}
-
-.qr-button img {
-    width: 34px;
-    height: 34px;
 }
 
 .thumbnail {

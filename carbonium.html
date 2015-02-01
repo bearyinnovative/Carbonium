@@ -4,7 +4,7 @@
 
 <template name="pictures">
   <div class="header">
-    <div class="left about"><img src="/images/info@2x.png"> 关于</div>
+    <div class="left about"><img class="icon" src="/images/info@2x.png"> 关于</div>
     <div class="logo">
       <img src="/images/logo@2x.png">
     </div>
@@ -18,7 +18,7 @@
       <li>
         <div class="qr-button">
           <a href="/{{_id}}/share">
-            <img src="/images/qrcode@2x.png">
+            <img class="icon" src="/images/qrcode@2x.png">
           </a>
         </div>
         <a href="/{{_id}}">
@@ -41,7 +41,8 @@
 
 <template name="upload">
   <form enctype="multipart/form-data" class="file-form">
-    <p>添加文件</p>
+    <img class="icon icon-img" src="/images/pic@2x.png">
+    <p>添加图片文件</p>
     <input name="file" type="file" class="file-input"/>
   </form>
   <progress style="display:none"></progress>
