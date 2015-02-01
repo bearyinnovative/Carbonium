@@ -7,6 +7,7 @@
 
 body {
     background: #232738;
+    color: #FFF;
 }
 
 form {
@@ -22,7 +23,6 @@ form {
 
 form p {
     display: inline;
-    color: #FFF;
 }
 
 input {
@@ -57,13 +57,14 @@ ul li:nth-child(odd) {
     margin-top: 20px;
 }
 
-.about {
+a {
+    text-decoration: none;
     color: #FFF;
 }
 
-.about a {
-    text-decoration: none;
-    color: #FFF;
+a.button {
+    border: 1px solid #FFF;
+    padding: 2px 10px;
 }
 
 .logo {
@@ -90,6 +91,7 @@ ul li:nth-child(odd) {
 .content {
     width: 960px;
     margin: 0 auto;
+    margin-top: 20px;
     text-align: center;
 }
 
