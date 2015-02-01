@@ -7,6 +7,9 @@ getDevicesByPictureId = (pictureId) ->
 getPictureUrlById = (pictureId) ->
   "http://#{window.location.hostname}:#{window.location.port}/#{pictureId}"
 
+updateDeviceInfo = (pictureId) ->
+  devices = getDevicesByPictureId(pictureId).fetch()
+
 upload_file = (file) ->
   AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
   avFile = new AV.File("dummy_file", file)
@@ -133,6 +136,12 @@ if Meteor.isClient
             #console.log left, top, lastX, lastY
           'mouseup img': (event)->
             isMouseDown = false
+            device = getMyDevice()
+            Devices.update
+              _id: device._id
+            ,
+            $set:
+              mouseUp: true
             console.log "mouseup"
           'mousemove img': (event) ->
             if isMouseDown
@@ -145,7 +154,8 @@ if Meteor.isClient
                 $set:
                   top: top
                   left: left
-                  lastestMoved: true
+                  shouldChange: true
+                  mouseUp: false
 
         Template.pictures.rendered = ->
             $('body').css("overflow", "auto")
@@ -154,15 +164,28 @@ if Meteor.isClient
 
         Devices.find({}).observe
           changed: (newDevice, oldDevice) ->
-            if oldDevice and (newDevice.top isnt oldDevice.top or newDevice.left isnt oldDevice.left)
+            if oldDevice and newDevice.mouseUp isnt oldDevice.mouseUp and newDevice.mouseUp
               device = getMyDevice()
               if newDevice._id isnt device._id
-                if device.lastestMoved is true
+                console.log device.left, device.top, parseInt(getComputedStyle(fullsize).left), parseInt(getComputedStyle(fullsize).top)
+                Devices.update
+                  _id: device._id
+                ,
+                $set:
+                  shouldChange: false
+                  mouseUp: false
+                  left: -parseInt(getComputedStyle(fullsize).left)
+                  top: parseInt(getComputedStyle(fullsize).top)
+
+            if oldDevice and (newDevice.top isnt oldDevice.top or newDevice.left isnt oldDevice.left) and newDevice.shouldChange
+              device = getMyDevice()
+              if newDevice._id isnt device._id
+                if device.shouldChange is true
                   Devices.update
                     _id: device._id
                   ,
                     $set:
-                      lastestMoved: false
+                      shouldChange: false
                 else
                   leftOffset = newDevice.left - oldDevice.left
                   topOffset = newDevice.top - oldDevice.top
@@ -170,6 +193,7 @@ if Meteor.isClient
                   $('#fullsize').css
                     left: parseInt(getComputedStyle(fullsize).left) - leftOffset
                     top: parseInt(getComputedStyle(fullsize).top) + topOffset
+
           removed: (removedDevice) ->
             device = getMyDevice()
             if removedDevice._id isnt device._id and device.left > removedDevice.left
@@ -183,7 +207,7 @@ if Meteor.isClient
                   ,
                   $set:
                     left: parseInt(getComputedStyle(fullsize).left)
-                    lastestMoved: true
+                    shouldChange: false
 
       Template.upload.events
         "change .file-input": (event, template) ->
@@ -222,6 +246,7 @@ if Meteor.isServer
         top = _.min(devices.map (d) -> d.top)
         left = _.min(devices.map (d) -> d.left)
         left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
+      console.log "insert new Device:", top
       newDevice.top = top
       newDevice.left = left
       true
