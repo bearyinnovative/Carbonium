@@ -42,7 +42,7 @@ if Meteor.isClient
       data: ->
         intervalId = Session.get 'intervalId'
         Meteor.clearInterval(intervalId) if intervalId
-        Session.set 'mydeviceId', undefined
+        Session.set 'myDeviceId', undefined
 
     @route 'about',
         path: '/about'
