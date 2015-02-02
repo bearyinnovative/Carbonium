@@ -80,9 +80,23 @@ if Meteor.isClient
       path: '/:picture_id'
       template: 'picture'
       data: ->
+        currentPictureId = @params.picture_id
+
+        unless Session.get 'myDeviceId'
+          myDeviceId = Devices.insert
+            pictureId: currentPictureId
+            width: jQuery(window).width()
+            height: jQuery(window).height()
+            top: 0
+            left: 0
+            userAgent: window.navigator.userAgent
+          Session.set 'intervalId', Meteor.setInterval ->
+            Meteor.call('heartbeat', myDeviceId)
+          , 200
+          Session.set 'myDeviceId', myDeviceId
+
         isMouseDown = false
         startX = startY = lastX = lastY = 0
-        currentPictureId = @params.picture_id
         parseCssInt = (target, selector) ->
           parseInt(getComputedStyle(target)[selector])
         getMyDevice = ->
@@ -114,30 +128,13 @@ if Meteor.isClient
 
         Template.picture.helpers
           picture: ->
-            currentPicture = Pictures.findOne(currentPictureId)
-            unless Session.get 'myDeviceId'
-              myDeviceId = Devices.insert
-                pictureId: currentPictureId
-                online: true
-                width: jQuery(window).width()
-                height: jQuery(window).height()
-                top: 0
-                left: 0
-                ts: Date.now()
-                userAgent: window.navigator.userAgent
-              Session.set 'intervalId', Meteor.setInterval ->
-                Meteor.call('heartbeat', myDeviceId)
-              , 200
-              Session.set 'myDeviceId', myDeviceId
-            return currentPicture
+            Pictures.findOne(currentPictureId)
 
           getLeft: ->
             -getMyDevice().left or 0
 
           getTop: ->
             getMyDevice().top or 0
-
-          myDevice: getMyDevice
 
         Template.picture.events
           'dragstart img': (event) ->
@@ -148,16 +145,14 @@ if Meteor.isClient
             top = parseCssInt(event.target, 'top')
             lastX = event.screenX - left
             lastY = event.screenY - top
-            #console.log left, top, lastX, lastY
           'mouseup img': (event)->
             isMouseDown = false
             device = getMyDevice()
             Devices.update
               _id: device._id
             ,
-            $set:
-              mouseUp: true
-            console.log "mouseup"
+              $set:
+                mouseUp: true
           'mousemove img': (event) ->
             if isMouseDown
               left = lastX - event.screenX
@@ -185,11 +180,11 @@ if Meteor.isClient
                 Devices.update
                   _id: device._id
                 ,
-                $set:
-                  shouldChange: false
-                  mouseUp: false
-                  left: -parseInt(getComputedStyle(fullsize).left)
-                  top: parseInt(getComputedStyle(fullsize).top)
+                  $set:
+                    shouldChange: false
+                    mouseUp: false
+                    left: -parseInt(getComputedStyle(fullsize).left)
+                    top: parseInt(getComputedStyle(fullsize).top)
 
             if oldDevice and (newDevice.top isnt oldDevice.top or newDevice.left isnt oldDevice.left) and newDevice.shouldChange
               device = getMyDevice()
@@ -217,19 +212,19 @@ if Meteor.isClient
                   Devices.update
                     _id: device._id
                   ,
-                  $set:
-                    left: parseInt(getComputedStyle(fullsize).left)
-                    shouldChange: false
+                    $set:
+                      left: parseInt(getComputedStyle(fullsize).left)
+                      shouldChange: false
 
       Template.upload.events
         "change .file-input": (event, template) ->
           upload_file(event.target.files[0])
         "click form": (event) ->
-            target = event.target
-            $('input', target).trigger "click"
+          target = event.target
+          $('input', target).trigger "click"
         "click p": (event) ->
-            target = event.target
-            $(target).next().trigger "click"
+          target = event.target
+          $(target).next().trigger "click"
 
   Template.pictures.helpers
     all: ->
@@ -258,9 +253,12 @@ if Meteor.isServer
         top = _.min(devices.map (d) -> d.top)
         left = _.min(devices.map (d) -> d.left)
         left += _.reduce((devices.map (d) -> d.width), ((a,b) -> a + b), 0) #sum
+
+      newDevice.ts = Date.now()
       newDevice.top = top
       newDevice.left = left
       true
+
     update: -> true
 
   Meteor.publish "pictures", ->
@@ -277,4 +275,3 @@ if Meteor.isServer
       Devices.remove {ts: {$lt: Date.now() - 1000}}
       console.log Devices.find({}).fetch()
     , 1000
-
