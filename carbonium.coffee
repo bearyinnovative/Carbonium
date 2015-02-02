@@ -5,7 +5,8 @@ getDevicesByPictureId = (pictureId) ->
   Devices.find({pictureId: pictureId})
 
 getPictureUrlById = (pictureId) ->
-  "http://#{window.location.hostname}:#{window.location.port}/#{pictureId}"
+  port = if window.location.port then ":" + window.location.port else ''
+  "http://#{window.location.hostname}#{port}/#{pictureId}"
 
 upload_file = (file) ->
   AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
