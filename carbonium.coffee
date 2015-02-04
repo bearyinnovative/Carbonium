@@ -18,6 +18,7 @@ uploadFile = (file) ->
     url = saved_file.url()
     pictureId = Pictures.insert
       url: url
+      createdAt: Date.now()
   , (error) ->
     alert("error")
 
@@ -262,7 +263,7 @@ if Meteor.isServer
     update: -> true
 
   Meteor.publish "pictures", ->
-    Pictures.find({})
+    Pictures.find({}, sort: {createdAt: -1})
 
   Meteor.publish "picture", (pictureId) ->
     Pictures.find(pictureId)
