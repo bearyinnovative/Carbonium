@@ -11,7 +11,7 @@ getPictureUrlById = (pictureId) ->
 updateDeviceInfo = (pictureId) ->
   devices = getDevicesByPictureId(pictureId).fetch()
 
-upload_file = (file) ->
+uploadFile = (file) ->
   AV.initialize("5m9xcgs9px1w68dfhoixe3px9ol7kjzbhdbo30mvbybzx5ht", "q9bhxqjx4nlm4sq8vcqbucot7l9e19p47s8elywqn34fchtj")
   avFile = new AV.File("dummy_file", file)
   avFile.save().then (saved_file) ->
@@ -218,7 +218,7 @@ if Meteor.isClient
 
       Template.upload.events
         "change .file-input": (event, template) ->
-          upload_file(event.target.files[0])
+          uploadFile(event.target.files[0])
         "click form": (event) ->
           target = event.target
           $('input', target).trigger "click"
